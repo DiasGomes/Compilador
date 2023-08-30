@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Lexer {
 
-    public static int line = 1; // contador de linhas
+    public static int linha = 1; // contador de linhas
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
     private Hashtable words = new Hashtable();
@@ -49,13 +49,13 @@ public class Lexer {
         return true;
     }
 
-    public Token scan() throws IOException {
+    public Token getToken() throws IOException {
         // Desconsidera delimitadores na entrada
         for (;; readch()) {
             if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\b')
                 continue;
             else if (ch == '\n')
-                line++; // conta linhas
+                linha++; // conta linhas
             else
                 break;
         }
@@ -86,6 +86,45 @@ public class Lexer {
                     return Word.ge;
                 else
                     return new Token('>');
+            case '+':
+                return new Token('+');
+            case '-':
+                return new Token('-');
+            case '*':
+                return new Token('*');
+            case '/':
+                // comentário de uma linha
+                if (readch('/')) {
+                    
+                }
+                // comentário de multiplas linhas
+                else if (readch('*')) {
+                    
+                }
+                // divisão
+                else
+                    return new Token('/');
+            case '!':
+                if (readch('='))
+                    return Word.ne;
+                else{
+                    // REPORTAR ERRO
+                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    return new Token('!');
+                }
+            case ';':
+                return new Token(';');
+            case ',':
+                return new Token(',');  
+            case '(':
+                return new Token('(');
+            case ')':
+                return new Token(')');  
+            case '{':
+                return new Token('{');
+            case '}':
+                return new Token('}');   
+                
         }
         // Números
         if (Character.isDigit(ch)) {
@@ -110,6 +149,13 @@ public class Lexer {
             w = new Word(s, Tag.ID);
             words.put(s, w);
             return w;
+        }
+        // fim do arquivo
+        if(ch == -1){
+            System.out.println("---------------------------------------------------------------");
+        }else{
+            // REPORTAR ERRO
+            System.out.println("ERRO: < Caractere '"+ ch +"' não reconhecido na linha "+ linha +" >");
         }
         // Caracteres não especificados
         Token t = new Token(ch);
