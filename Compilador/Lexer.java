@@ -23,12 +23,16 @@ public class Lexer {
             throw e;
         }
         // Insere palavras reservadas na HashTable
-        // reserve(new Word ("if", Tag.IF));
-        reserve(new Word("program", Tag.PRG));
-        reserve(new Word("begin", Tag.BEG));
-        reserve(new Word("end", Tag.END));
-        reserve(new Word("type", Tag.TYPE));
         reserve(new Word("int", Tag.INT));
+        reserve(new Word("float", Tag.FLOAT));
+        reserve(new Word("string", Tag.STRING));
+        reserve(new Word("class", Tag.CLASS));
+        reserve(new Word("if", Tag.IF));
+        reserve(new Word("else", Tag.ELSE));
+        reserve(new Word("read", Tag.READ));
+        reserve(new Word("write", Tag.WRITE));
+        reserve(new Word("while", Tag.WHILE));
+        reserve(new Word("do", Tag.DO));
     }
 
     /* Lê o próximo caractere do arquivo */
@@ -90,7 +94,7 @@ public class Lexer {
                 value = 10 * value + Character.digit(ch, 10);
                 readch();
             } while (Character.isDigit(ch));
-            return new Num(value);
+            return new IntegerConst(value);
         }
         // Identificadores
         if (Character.isLetter(ch)) {
