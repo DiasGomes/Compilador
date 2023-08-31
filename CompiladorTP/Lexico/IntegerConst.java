@@ -1,3 +1,5 @@
+package CompiladorTP.Lexico;
+
 public class IntegerConst extends Token{
 
     public final int value;

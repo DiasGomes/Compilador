@@ -1,3 +1,5 @@
+package CompiladorTP.Lexico;
+
 public class Token {
     public final int tag; //constante que representa o token
     

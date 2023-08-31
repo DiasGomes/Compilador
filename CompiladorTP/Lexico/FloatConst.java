@@ -1,3 +1,5 @@
+package CompiladorTP.Lexico;
+
 public class FloatConst extends Token{
 
     public final float value;
@@ -12,3 +14,4 @@ public class FloatConst extends Token{
     }
     
 }
+

@@ -1,3 +1,5 @@
+package CompiladorTP.Lexico;
+
 public class Word extends Token {
     
     private String lexeme = "";

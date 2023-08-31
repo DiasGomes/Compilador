@@ -1,3 +1,5 @@
+package CompiladorTP.Lexico;
+
 import java.io.*;
 import java.util.*;
 
@@ -6,7 +8,7 @@ public class Lexer {
     public static int linha = 1; // contador de linhas
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
-    private Hashtable words = new Hashtable();
+    private Hashtable<String, Word> words = new Hashtable<String, Word>();
 
     /* Método para inserir palavras reservadas na HashTable */
     private void reserve(Word w) {
@@ -59,6 +61,40 @@ public class Lexer {
             else
                 break;
         }
+
+        // tratando divisão e comentarios
+        if (ch == '/') {
+            readch();
+            // comentário de uma linha
+            if(ch == '/'){
+                while(ch != '\n'){
+                    readch();
+                }
+            }
+            // comentário de multiplas linhas
+            else if (ch == '*') {
+                boolean terminou = false;
+                boolean asterisco = false;
+                while(terminou){
+                    readch();
+                    if(asterisco){
+                        asterisco = false;
+                        if(ch == '/'){
+                            terminou = true;
+                        }
+                    }else{
+                        if(ch == '*'){
+                            asterisco = true;
+                        }
+                    }
+                }
+            }
+            // divisão
+            else
+                return new Token('/');
+        }
+        
+        // caracteres gerais
         switch (ch) {
             // Operadores
             case '&':
@@ -92,18 +128,6 @@ public class Lexer {
                 return new Token('-');
             case '*':
                 return new Token('*');
-            case '/':
-                // comentário de uma linha
-                if (readch('/')) {
-                    
-                }
-                // comentário de multiplas linhas
-                else if (readch('*')) {
-                    
-                }
-                // divisão
-                else
-                    return new Token('/');
             case '!':
                 if (readch('='))
                     return Word.ne;
@@ -126,6 +150,7 @@ public class Lexer {
                 return new Token('}');   
                 
         }
+
         // Números
         if (Character.isDigit(ch)) {
             int value = 0;
@@ -135,6 +160,7 @@ public class Lexer {
             } while (Character.isDigit(ch));
             return new IntegerConst(value);
         }
+
         // Identificadores
         if (Character.isLetter(ch)) {
             StringBuffer sb = new StringBuffer();
