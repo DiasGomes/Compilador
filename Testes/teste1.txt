@@ -9,6 +9,6 @@ float result;
     read (c);
     b = 10;
     result = (a * c)/(b 5 - 345);
-    write("O resultado e: ");
+    write("O Resultado e: ");
     write(result);
 }

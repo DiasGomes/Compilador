@@ -10,7 +10,7 @@ public class FloatConst extends Token{
     }
 
     public String toString() {
-        return "" + value;
+        return "<" + value + ", CONSTANTE FLOAT>";
     }
     
 }

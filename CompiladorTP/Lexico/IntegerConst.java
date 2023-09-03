@@ -10,7 +10,7 @@ public class IntegerConst extends Token{
     }
 
     public String toString() {
-        return "" + value;
+        return "<" + value + ", CONSTANTE INT>";
     }
     
 }

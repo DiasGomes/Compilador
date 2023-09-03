@@ -28,17 +28,18 @@ public class Tag {
     FECHA_CHAVES = 285,
     INTEGER_CONST = 286,
     FLOAT_CONST = 287,
+    STRING_CONST = 288,
 
     // Palavras reservadas
-    INT = 288,
-    FLOAT = 289,
-    STRING = 290,
-    CLASS = 291,
-    IF = 292,
-    ELSE = 293,
-    READ = 294,
-    WRITE = 295,
-    WHILE = 296,
-    DO = 297;
+    INT = 289,
+    FLOAT = 290,
+    STRING = 291,
+    CLASS = 292,
+    IF = 293,
+    ELSE = 294,
+    READ = 295,
+    WRITE = 296,
+    WHILE = 297,
+    DO = 298;
 
 }

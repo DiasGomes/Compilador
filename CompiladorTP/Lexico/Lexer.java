@@ -12,7 +12,7 @@ public class Lexer {
 
     /* Método para inserir palavras reservadas na HashTable */
     private void reserve(Word w) {
-        //words.put(w.getLexeme(), w); // lexema é a chave para entrada na
+        words.put(w.getLexeme(), w); // lexema é a chave para entrada na
         // HashTable
     }
 
@@ -101,32 +101,44 @@ public class Lexer {
                 if (readch('&'))
                     return Word.and;
                 else
+                    // REPORTAR ERRO
+                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    ch = ' ';
                     return new Token('&');
             case '|':
                 if (readch('|'))
                     return Word.or;
                 else
+                    // REPORTAR ERRO
+                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    ch = ' ';
                     return new Token('|');
             case '=':
                 if (readch('='))
                     return Word.eq;
                 else
+                    ch = ' ';
                     return new Token('=');
             case '<':
                 if (readch('='))
                     return Word.le;
                 else
+                    ch = ' ';
                     return new Token('<');
             case '>':
                 if (readch('='))
                     return Word.ge;
                 else
+                    ch = ' ';
                     return new Token('>');
             case '+':
+                ch = ' ';
                 return new Token('+');
             case '-':
+                ch = ' ';
                 return new Token('-');
             case '*':
+                ch = ' ';
                 return new Token('*');
             case '!':
                 if (readch('='))
@@ -134,20 +146,39 @@ public class Lexer {
                 else{
                     // REPORTAR ERRO
                     System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    ch = ' ';
                     return new Token('!');
                 }
             case ';':
+                ch = ' ';
                 return new Token(';');
             case ',':
+                ch = ' ';
                 return new Token(',');  
             case '(':
+                ch = ' ';
                 return new Token('(');
             case ')':
+                ch = ' ';
                 return new Token(')');  
             case '{':
+                ch = ' ';
                 return new Token('{');
             case '}':
+                ch = ' ';
                 return new Token('}');   
+            case '"':
+                ch = ' ';
+                StringBuffer sb = new StringBuffer();
+                while (ch != '"') {
+                    sb.append(ch);
+                    readch();
+                }
+                String s = sb.toString();
+                Word w = new Word(s, Tag.STRING_CONST);
+                words.put(s, w);
+                ch = ' ';
+                return w;
                 
         }
 
@@ -177,7 +208,7 @@ public class Lexer {
             return w;
         }
         // fim do arquivo
-        if(ch == -1){
+        if(ch == 65535){
             System.out.println("---------------------------------------------------------------");
         }else{
             // REPORTAR ERRO

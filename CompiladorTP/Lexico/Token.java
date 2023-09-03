@@ -8,7 +8,8 @@ public class Token {
     }
     
     public String toString(){
-        return "" + tag;
+        char t = (char) tag;
+        return "<" + t + ">";
     }
 
 }
