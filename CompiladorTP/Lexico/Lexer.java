@@ -70,24 +70,31 @@ public class Lexer {
                 while(ch != '\n'){
                     readch();
                 }
+                linha++;
+                System.out.println("// comentario de uma linha");
+                return new Token(-1);
             }
             // comentário de multiplas linhas
             else if (ch == '*') {
                 boolean terminou = false;
                 boolean asterisco = false;
-                while(terminou){
+                while(!terminou){
                     readch();
-                    if(asterisco){
-                        asterisco = false;
-                        if(ch == '/'){
-                            terminou = true;
-                        }
-                    }else{
-                        if(ch == '*'){
-                            asterisco = true;
-                        }
+                    switch(ch){
+                        // verifica fim de arquivo
+                        case 65535: System.out.println("ERRO: <Comentario nao foi fechado>"); terminou = true;  break; 
+                        // verifica termino de comentario
+                        case '*': asterisco = true; break;
+                        case '/':   if(asterisco){
+                                        System.out.println("/* Comentario de multiplas linhas */");
+                                        terminou = true;
+                                    }else{
+                                        asterisco = false; 
+                                    } break;
+                        default: asterisco = false;
                     }
                 }
+                return new Token(-1);
             }
             // divisão
             else
@@ -182,13 +189,18 @@ public class Lexer {
                 
         }
 
-        // Números
+        // Números Inteiros
         if (Character.isDigit(ch)) {
             int value = 0;
             do {
                 value = 10 * value + Character.digit(ch, 10);
                 readch();
             } while (Character.isDigit(ch));
+            // Números Decimais
+            if(ch == '.'){
+                // ... to do
+                return new FloatConst(value);
+            }
             return new IntegerConst(value);
         }
 
@@ -207,13 +219,16 @@ public class Lexer {
             words.put(s, w);
             return w;
         }
+
         // fim do arquivo
         if(ch == 65535){
             System.out.println("---------------------------------------------------------------");
         }else{
             // REPORTAR ERRO
-            System.out.println("ERRO: < Caractere '"+ ch +"' não reconhecido na linha "+ linha +" >");
+            int ch_num = (int) ch;
+            System.out.println("ERRO: < Caractere '"+ ch +"' ("+ ch_num +") não reconhecido na linha "+ linha +" >");
         }
+
         // Caracteres não especificados
         Token t = new Token(ch);
         ch = ' ';

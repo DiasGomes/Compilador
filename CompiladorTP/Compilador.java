@@ -13,7 +13,7 @@ public class Compilador {
 
     public static void main(String args[])  throws FileNotFoundException {
         if(args.length > 0){
-            System.out.println("Compilando Arquivo "+args[0]);
+            System.out.println("\nCompilando o arquivo "+args[0]+"\n");
             lexer = new Lexer(args[0]);
             showTokens();
         }else{
@@ -25,7 +25,9 @@ public class Compilador {
        do {
             try {
                 token = lexer.getToken();
-                System.out.println(token.toString());
+                if(token.tag != -1){
+                    System.out.println(token.toString());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
