@@ -189,17 +189,24 @@ public class Lexer {
                 
         }
 
-        // Números Inteiros
+        // Números
         if (Character.isDigit(ch)) {
             int value = 0;
             do {
                 value = 10 * value + Character.digit(ch, 10);
                 readch();
             } while (Character.isDigit(ch));
-            // Números Decimais
+            // Número Decimal
             if(ch == '.'){
-                // ... to do
-                return new FloatConst(value);
+                double value_dec = 0;
+                int qtd_casas = 1;
+                readch();
+                while (Character.isDigit(ch)) {
+                    value_dec += (Character.digit(ch, 10)) / (Math.pow(10, qtd_casas));
+                    qtd_casas++;
+                    readch();
+                }
+                return new FloatConst(value+value_dec);
             }
             return new IntegerConst(value);
         }

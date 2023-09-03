@@ -2,9 +2,9 @@ package CompiladorTP.Lexico;
 
 public class FloatConst extends Token{
 
-    public final float value;
+    public final double value;
 
-    public FloatConst(int value) {
+    public FloatConst(double value) {
         super(Tag.FLOAT_CONST);
         this.value = value;
     }
