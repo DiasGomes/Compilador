@@ -2,14 +2,12 @@
 // testa comentarios seguidos
 
 class TesteFloat
-float a,b,c, result;
+int a, result;
 
 {
     write("Digite o valor de a:");
     read (a);
-    b = 10.234;
-    c = 0.25c;
-    result = (a * b * c);
+    result = (a * 2);
     write("O Resultado e: ");
     write(result);
 }
