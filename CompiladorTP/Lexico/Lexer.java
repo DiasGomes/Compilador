@@ -10,6 +10,17 @@ public class Lexer {
     private FileReader file;
     private Hashtable<String, Word> words = new Hashtable<String, Word>();
 
+    public void showTable(){
+        System.out.println("TABELA DE SIMBOLOS");
+        System.out.println("PALAVRA | TIPO");
+        System.out.println("----------------------");
+        //System.out.println(Arrays.asList(words));
+        for( Map.Entry<String, Word> entry : words.entrySet() ){
+            System.out.println( entry.getKey() + " = " + entry.getValue() );
+        }
+        System.out.println("=======================");
+    }
+
     /* Método para inserir palavras reservadas na HashTable */
     private void reserve(Word w) {
         words.put(w.getLexeme(), w); // lexema é a chave para entrada na
@@ -175,7 +186,7 @@ public class Lexer {
                 ch = ' ';
                 return new Token('}');   
             case '"':
-                ch = ' ';
+                ch = 0;
                 StringBuffer sb = new StringBuffer();
                 while (ch != '"') {
                     sb.append(ch);
@@ -183,7 +194,7 @@ public class Lexer {
                 }
                 String s = sb.toString();
                 Word w = new Word(s, Tag.STRING_CONST);
-                words.put(s, w);
+                //words.put(s, w);
                 ch = ' ';
                 return w;
                 
@@ -227,10 +238,8 @@ public class Lexer {
             return w;
         }
 
-        // fim do arquivo
-        if(ch == 65535){
-            System.out.println("---------------------------------------------------------------");
-        }else{
+        // Caractere desconhecido (diferente de EOF)
+        if(ch != 65535){
             // REPORTAR ERRO
             int ch_num = (int) ch;
             System.out.println("ERRO: < Caractere '"+ ch +"' ("+ ch_num +") não reconhecido na linha "+ linha +" >");

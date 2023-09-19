@@ -16,23 +16,31 @@ public class Compilador {
             System.out.println("\nCompilando o arquivo "+args[0]+"\n");
             lexer = new Lexer(args[0]);
             showTokens();
+            if(args.length > 1){
+                if(args[1].equalsIgnoreCase("tabela")){
+                    lexer.showTable();
+                }
+            }
         }else{
             System.out.println("Erro: Arquivo não informado");
         }
     }
 
     private static void showTokens(){
-       do {
-            try {
-                token = lexer.getToken();
-                if(token.tag != -1){
-                    System.out.println(token.toString());
+        System.out.println("TOKENS");
+        System.out.println("----------------------");
+        do {
+                try {
+                    token = lexer.getToken();
+                    if(token.tag != 65535){
+                        System.out.println(token.toString());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            
-        } while(token.tag != 65535);
+                
+            } while(token.tag != 65535);
+            System.out.println("=============================================================\n");
     }
     
 }
