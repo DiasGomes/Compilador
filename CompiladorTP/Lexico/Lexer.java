@@ -9,6 +9,7 @@ public class Lexer {
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
     private Hashtable<String, Word> words = new Hashtable<String, Word>();
+    private final int EOF = 65535;
 
     public void showTable(){
         System.out.println("TABELA DE SIMBOLOS");
@@ -93,7 +94,12 @@ public class Lexer {
                     readch();
                     switch(ch){
                         // verifica fim de arquivo
-                        case 65535: System.out.println("ERRO: <Comentario nao foi fechado>"); terminou = true;  break; 
+                        case EOF: 
+                            System.out.println("ERRO: <Comentario nao foi fechado>"); 
+                            terminou = true;  
+                            Token t = new Token(ch);
+                            ch = ' ';
+                            return t;
                         // verifica termino de comentario
                         case '*': asterisco = true; break;
                         case '/':   if(asterisco){
@@ -189,6 +195,13 @@ public class Lexer {
                 ch = 0;
                 StringBuffer sb = new StringBuffer();
                 while (ch != '"') {
+                    // não fechou string
+                    if(ch == EOF){
+                        System.out.println("ERRO: STRING nao finalizada");
+                        Token t = new Token(ch);
+                        ch = ' ';
+                        return t;
+                    }
                     sb.append(ch);
                     readch();
                 }
@@ -239,7 +252,7 @@ public class Lexer {
         }
 
         // Caractere desconhecido (diferente de EOF)
-        if(ch != 65535){
+        if(ch != EOF){
             // REPORTAR ERRO
             int ch_num = (int) ch;
             System.out.println("ERRO: < Caractere '"+ ch +"' ("+ ch_num +") não reconhecido na linha "+ linha +" >");

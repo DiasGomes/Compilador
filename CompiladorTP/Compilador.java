@@ -32,7 +32,7 @@ public class Compilador {
         do {
                 try {
                     token = lexer.getToken();
-                    if(token.tag != 65535){
+                    if(token.tag != 65535 && token.tag > 0){
                         System.out.println(token.toString());
                     }
                 } catch (IOException e) {

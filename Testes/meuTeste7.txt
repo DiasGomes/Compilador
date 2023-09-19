@@ -1,7 +1,7 @@
-// testa float
-// testa comentarios seguidos
+// testa comentarios
+// de uma linha seguidos
 
-class TesteFloat
+class TesteDuploComentario
 int a, result;
 
 {
