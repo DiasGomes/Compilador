@@ -10,12 +10,12 @@ public class Lexer {
     private FileReader file;
     private Hashtable<String, Word> words = new Hashtable<String, Word>();
     private final int EOF = 65535;
+    private final Token TOKEN_IGNORA = new Token(-1);
 
     public void showTable(){
         System.out.println("TABELA DE SIMBOLOS");
         System.out.println("PALAVRA | TIPO");
         System.out.println("----------------------");
-        //System.out.println(Arrays.asList(words));
         for( Map.Entry<String, Word> entry : words.entrySet() ){
             System.out.println( entry.getKey() + " = " + entry.getValue() );
         }
@@ -24,8 +24,8 @@ public class Lexer {
 
     /* Método para inserir palavras reservadas na HashTable */
     private void reserve(Word w) {
-        words.put(w.getLexeme(), w); // lexema é a chave para entrada na
-        // HashTable
+        // lexema é a chave para entrada na HashTable
+        words.put(w.getLexeme(), w); 
     }
 
     /* Método construtor */
@@ -83,8 +83,9 @@ public class Lexer {
                     readch();
                 }
                 linha++;
-                System.out.println("// comentario de uma linha");
-                return new Token(-1);
+                ch = ' ';
+                //System.out.println("// comentario de uma linha");
+                return TOKEN_IGNORA;
             }
             // comentário de multiplas linhas
             else if (ch == '*') {
@@ -95,7 +96,7 @@ public class Lexer {
                     switch(ch){
                         // verifica fim de arquivo
                         case EOF: 
-                            System.out.println("ERRO: <Comentario nao foi fechado>"); 
+                            System.out.println("ERRO: < Comentario nao foi fechado >"); 
                             terminou = true;  
                             Token t = new Token(ch);
                             ch = ' ';
@@ -103,15 +104,16 @@ public class Lexer {
                         // verifica termino de comentario
                         case '*': asterisco = true; break;
                         case '/':   if(asterisco){
-                                        System.out.println("/* Comentario de multiplas linhas */");
+                                        //System.out.println("/* Comentario de multiplas linhas */");
                                         terminou = true;
                                     }else{
                                         asterisco = false; 
                                     } break;
+                        case '\n': linha++; break;
                         default: asterisco = false;
                     }
                 }
-                return new Token(-1);
+                return TOKEN_IGNORA;
             }
             // divisão
             else
@@ -126,7 +128,7 @@ public class Lexer {
                     return Word.and;
                 else
                     // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    System.out.println("ERRO: < Caractere '&' não reconhecido > (linha "+ linha +")");
                     ch = ' ';
                     return new Token('&');
             case '|':
@@ -134,7 +136,7 @@ public class Lexer {
                     return Word.or;
                 else
                     // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    System.out.println("ERRO: < Caractere '|' não reconhecido > (linha "+ linha +")");
                     ch = ' ';
                     return new Token('|');
             case '=':
@@ -169,7 +171,7 @@ public class Lexer {
                     return Word.ne;
                 else{
                     // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '!' não reconhecido na linha "+ linha +" >");
+                    System.out.println("ERRO: < Caractere '!' não reconhecido > (linha "+ linha +")");
                     ch = ' ';
                     return new Token('!');
                 }
@@ -197,7 +199,7 @@ public class Lexer {
                 while (ch != '"') {
                     // não fechou string
                     if(ch == EOF){
-                        System.out.println("ERRO: STRING nao finalizada");
+                        System.out.println("ERRO: < STRING nao finalizada >");
                         Token t = new Token(ch);
                         ch = ' ';
                         return t;
@@ -241,7 +243,7 @@ public class Lexer {
             do {
                 sb.append(ch);
                 readch();
-            } while (Character.isLetterOrDigit(ch));
+            } while (Character.isLetterOrDigit(ch) || ch == '_');
             String s = sb.toString();
             Word w = (Word) words.get(s);
             if (w != null)
@@ -255,7 +257,7 @@ public class Lexer {
         if(ch != EOF){
             // REPORTAR ERRO
             int ch_num = (int) ch;
-            System.out.println("ERRO: < Caractere '"+ ch +"' ("+ ch_num +") não reconhecido na linha "+ linha +" >");
+            System.out.println("ERRO: < Caractere {'"+ ch +"', "+ ch_num +"} nao reconhecido > (linha "+ linha +")");
         }
 
         // Caracteres não especificados

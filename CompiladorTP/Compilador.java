@@ -27,14 +27,16 @@ public class Compilador {
     }
 
     private static void showTokens(){
-        System.out.println("TOKENS");
-        System.out.println("----------------------");
+        //System.out.println("TOKENS");
+        //System.out.println("----------------------");
         do {
                 try {
                     token = lexer.getToken();
+                    /*
                     if(token.tag != 65535 && token.tag > 0){
                         System.out.println(token.toString());
                     }
+                     */
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -7,7 +7,7 @@ class MinhaClasse
     read(b);
     write("Digite mais um número: ");
     read(c;
-    maior = 0;
+    maior := 0;
     if ( a>b && a>c )
         maior = a;
     else
