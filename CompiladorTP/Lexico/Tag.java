@@ -8,24 +8,24 @@ public class Tag {
     NE = 257,
     GE = 258,
     LE = 259,
-    GT = 260,
-    LT = 271,
-    SUM = 272,
-    SUB = 273,
+    GT = (int) '>',
+    LT = (int) '<',
+    SUM = (int) '+',
+    SUB = (int) '-',
     OR = 274,
-    MUL = 275,
-    DIV = 276,
+    MUL = (int) '*',
+    DIV = (int) '/',
     AND = 277,
-    ATR = 278,
+    ATR = (int) '=',
 
     // outros tokens
     ID = 279,
-    PONTO_VIRGULA = 280,
-    VIRGULA = 281,
-    ABRE_PARENTESES = 282,
-    FECHA_PARENTESES = 283,
-    ABRE_CHAVES = 284,
-    FECHA_CHAVES = 285,
+    PONTO_VIRGULA = (int) ';',
+    VIRGULA = (int) ',',
+    ABRE_PARENTESES = (int) '(',
+    FECHA_PARENTESES = (int) ')',
+    ABRE_CHAVES = (int) '{',
+    FECHA_CHAVES = (int) '}',
     INTEGER_CONST = 286,
     FLOAT_CONST = 287,
     STRING_CONST = 288,
@@ -41,5 +41,31 @@ public class Tag {
     WRITE = 296,
     WHILE = 297,
     DO = 298;
+
+    public static String showTag(int t){
+        switch (t){
+            case EQ: return "==";
+            case NE: return "!=";
+            case GE: return ">=";
+            case LE: return "<=";
+            case OR: return "OR";
+            case AND: return "AND";
+            case ID: return "ID";
+            case INTEGER_CONST: return "INTEGER_CONST";
+            case FLOAT_CONST: return "FLOAT_CONST";
+            case STRING_CONST: return "STRING_CONST";
+            case INT: return "INT";
+            case FLOAT: return "FLOAT";
+            case STRING: return "STRING";
+            case CLASS: return "CLASS";
+            case IF: return "IF";
+            case ELSE: return "ELSE";
+            case READ: return "READ";
+            case WRITE: return "WRITE";
+            case WHILE: return "WHILE";
+            case DO: return "DO";
+            default: return "" + (char) t;
+        }
+    }
 
 }
