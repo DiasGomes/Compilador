@@ -17,6 +17,7 @@ public class Tag {
     DIV = (int) '/',
     AND = 277,
     ATR = (int) '=',
+    NEG = (int) '!',
 
     // outros tokens
     ID = 279,
@@ -29,6 +30,9 @@ public class Tag {
     INTEGER_CONST = 286,
     FLOAT_CONST = 287,
     STRING_CONST = 288,
+
+    // fim de arquivo
+    EOF = 65535,
 
     // Palavras reservadas
     INT = 289,
@@ -64,6 +68,7 @@ public class Tag {
             case WRITE: return "WRITE";
             case WHILE: return "WHILE";
             case DO: return "DO";
+            case EOF: return "EOF";
             default: return "" + (char) t;
         }
     }

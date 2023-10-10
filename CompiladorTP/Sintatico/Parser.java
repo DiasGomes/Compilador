@@ -18,6 +18,10 @@ public class Parser {
 
     private void move() throws IOException { 
         tok = lex.getToken(); 
+        // Ignora comentarios
+        if(tok.tag == -1){
+            move();
+        }
     }
 
     // Consome o token
@@ -26,17 +30,24 @@ public class Parser {
             move();
         }else{
             erro( Tag.showTag(tag) );
+            move();
         }
     }
 
     // Mostra o erro
     private void erro(String msg){
-        System.out.println("ERRO: Token esperado: "+msg+", mas obteve "+ Tag.showTag(tok.tag)+ "(linha "+lex.linha+")");
+        System.out.println("ERRO: Token esperado: <"+msg+">, mas obteve <"+ Tag.showTag(tok.tag)+"> (linha "+Lexer.linha+")");
     }
 
 
     /* METODOS DA GRAMATICA */
-    public void Program() throws IOException{
+    public void ExecParser() throws IOException{
+        // Program $
+        Program();
+        eat(Tag.EOF);
+    }
+
+    private void Program() throws IOException{
         // class identifier [decl-list] body
         eat(Tag.CLASS);
         eat(Tag.ID);
@@ -46,6 +57,11 @@ public class Parser {
 
     private void DeclList() throws IOException{
         // decl ";" { decl ";"}
+        Decl();
+        if(tok.tag == Tag.PONTO_VIRGULA){
+            eat(Tag.PONTO_VIRGULA);
+            DeclList();
+        }
     }
 
     private void Decl() throws IOException{
@@ -56,6 +72,11 @@ public class Parser {
 
     private void IdentList() throws IOException{
         // identifier {"," identifier}
+        eat(Tag.ID);
+        if(tok.tag == Tag.VIRGULA){
+            eat(Tag.VIRGULA);
+            IdentList();
+        }
     }
 
     private void Type() throws IOException{
@@ -73,19 +94,55 @@ public class Parser {
         eat( Tag.FECHA_CHAVES );
     }
 
-    private void StmtList() throws IOException{}
+    private void StmtList() throws IOException{
+        // stmt ";" { stmt ";" }
+        Stmt();
+        if(tok.tag == Tag.PONTO_VIRGULA){
+            eat(Tag.PONTO_VIRGULA);
+            StmtList();
+        }
+    }
 
     private void Stmt() throws IOException{
         // assign-stmt | if-stmt | do-stmt | read-stmt | write-stmt
+        switch(tok.tag){
+            case Tag.ID: AssignStmt(); break;
+            case Tag.IF: IfStmt(); break;
+            case Tag.DO: DoStmt(); break;
+            case Tag.READ: ReadStmt(); break;
+            case Tag.WRITE: WriteStmt(); break;
+            default: erro("ID, IF, DO, READ ou WRITE");
+        }
     }
 
     private void AssignStmt() throws IOException{
         // identifier "=" simple_expr
+        eat(Tag.ID);
+        eat(Tag.ATR);
+        SimpleExpr();
     }
 
     private void IfStmt() throws IOException{
-        // if "(" condition ")" "{" stmt-list "}"
-        // if "(" condition ")" "{" stmt-list "}" else "{" stmt-list "}"
+        // if "(" condition ")" "{" stmt-list "} else-stmt"
+        eat(Tag.IF);
+        eat( Tag.ABRE_PARENTESES );
+        Condition();
+        eat( Tag.FECHA_PARENTESES );
+        eat( Tag.ABRE_CHAVES );
+        StmtList();
+        eat( Tag.FECHA_CHAVES );
+        ElseStmt();
+    }
+
+    private void ElseStmt() throws IOException{
+        // else "{" stmt-list "}" | λ
+        switch(tok.tag){
+            case Tag.ELSE: 
+                eat(Tag.ELSE); eat( Tag.ABRE_CHAVES );
+                StmtList(); eat( Tag.FECHA_CHAVES );
+                break;
+            default: return;
+        }
     }
 
     private void Condition() throws IOException{
@@ -133,18 +190,38 @@ public class Parser {
 
     private void Expression() throws IOException{
         // simple-expr | simple-expr relop simple-expr
+        SimpleExpr();
+        if(tok.tag == Tag.GT || tok.tag == Tag.GE || tok.tag == Tag.LT || tok.tag == Tag.LE  || tok.tag == Tag.EQ  || tok.tag == Tag.NE){
+            Relop();
+            SimpleExpr();
+        }
     }
 
     private void SimpleExpr() throws IOException{
-        // term | simple-expr addop term
+        // term | term addop simple-expr
+        Term();
+        if(tok.tag == Tag.SUM || tok.tag == Tag.SUB || tok.tag == Tag.OR){
+            Addop();
+            SimpleExpr();
+        }
     }
 
     private void Term() throws IOException{
-        // factor-a | term mulop factor-a
+        // factor-a | factor-a mulop term
+        FactorA();
+        if(tok.tag == Tag.MUL || tok.tag == Tag.DIV || tok.tag == Tag.AND){
+            Mulop();
+            Term();
+        }
     }
 
     private void FactorA() throws IOException{
         // factor | "!" factor | "-" factor
+        switch(tok.tag){
+            case Tag.SUB: eat(Tag.SUB); Factor(); break;
+            case Tag.NEG: eat(Tag.NEG); Factor(); break;
+            default: Factor();
+        }
     }
 
     private void Factor() throws IOException{

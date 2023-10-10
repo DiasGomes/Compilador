@@ -1,15 +1,12 @@
 package CompiladorTP;
 
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import CompiladorTP.Lexico.Lexer;
-import CompiladorTP.Lexico.Token;
 import CompiladorTP.Sintatico.Parser;
 
 public class Compilador {
 
-    private static Token token;
     private static Lexer lexer;
     private static Parser parser;
 
@@ -23,30 +20,11 @@ public class Compilador {
                 }
             }
             parser = new Parser(lexer);
-            parser.Program();
+            parser.ExecParser();
+            System.out.println("============ Fim de analise! ==========\n");
         }else{
             System.out.println("Erro: Arquivo não informado");
         }
-    }
-
-
-
-    // metodo usado para avaliar funcionamento do analisador lexico
-    private static void showTokens(){
-        System.out.println("TOKENS");
-        System.out.println("----------------------");
-        do {
-                try {
-                    token = lexer.getToken();
-                    if(token.tag != 65535 && token.tag > 0){
-                        System.out.println(token.toString());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                
-            } while(token.tag != 65535);
-        System.out.println("=============================================================\n");
     }
     
 }
