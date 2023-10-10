@@ -1,7 +1,6 @@
 package CompiladorTP.Sintatico;
 
 import java.io.IOException;
-
 import CompiladorTP.Lexico.Lexer;
 import CompiladorTP.Lexico.Tag;
 import CompiladorTP.Lexico.Token;
@@ -22,6 +21,7 @@ public class Parser {
         if(tok.tag == -1){
             move();
         }
+        //System.out.println(tok);
     }
 
     // Consome o token
@@ -48,6 +48,7 @@ public class Parser {
     }
 
     private void Program() throws IOException{
+        //System.out.println("PROGRAM()");
         // class identifier [decl-list] body
         eat(Tag.CLASS);
         eat(Tag.ID);
@@ -56,21 +57,24 @@ public class Parser {
     }
 
     private void DeclList() throws IOException{
+        //System.out.println("DECL-LIST()");
         // decl ";" { decl ";"}
         Decl();
-        if(tok.tag == Tag.PONTO_VIRGULA){
-            eat(Tag.PONTO_VIRGULA);
+        eat(Tag.PONTO_VIRGULA);
+        if(tok.tag == Tag.INT || tok.tag == Tag.FLOAT || tok.tag == Tag.STRING){
             DeclList();
         }
     }
 
     private void Decl() throws IOException{
+        //System.out.println("DECL()");
         // type ident-list
         Type();
         IdentList();
     }
 
     private void IdentList() throws IOException{
+        //System.out.println("IDENT-LIST()");
         // identifier {"," identifier}
         eat(Tag.ID);
         if(tok.tag == Tag.VIRGULA){
@@ -80,6 +84,8 @@ public class Parser {
     }
 
     private void Type() throws IOException{
+        //System.out.println("TYPE()");
+        // int | string | float
         switch(tok.tag){
             case Tag.INT: eat(Tag.INT); break;
             case Tag.STRING: eat(Tag.STRING); break;
@@ -89,21 +95,25 @@ public class Parser {
     }
 
     private void Body() throws IOException{
+        //System.out.println("BODY()");
+        // "{" stmt-list "}"
         eat( Tag.ABRE_CHAVES );
         StmtList();
         eat( Tag.FECHA_CHAVES );
     }
 
     private void StmtList() throws IOException{
+        //System.out.println("STMT-LIST()");
         // stmt ";" { stmt ";" }
         Stmt();
-        if(tok.tag == Tag.PONTO_VIRGULA){
-            eat(Tag.PONTO_VIRGULA);
+        eat(Tag.PONTO_VIRGULA);
+        if(tok.tag == Tag.ID || tok.tag == Tag.IF || tok.tag == Tag.DO || tok.tag == Tag.READ || tok.tag == Tag.WRITE){
             StmtList();
         }
     }
 
     private void Stmt() throws IOException{
+        //System.out.println("STMT()");
         // assign-stmt | if-stmt | do-stmt | read-stmt | write-stmt
         switch(tok.tag){
             case Tag.ID: AssignStmt(); break;
@@ -116,6 +126,7 @@ public class Parser {
     }
 
     private void AssignStmt() throws IOException{
+        //System.out.println("ASSIGN-STMT()");
         // identifier "=" simple_expr
         eat(Tag.ID);
         eat(Tag.ATR);
@@ -123,6 +134,7 @@ public class Parser {
     }
 
     private void IfStmt() throws IOException{
+        //System.out.println("IF-STMT()");
         // if "(" condition ")" "{" stmt-list "} else-stmt"
         eat(Tag.IF);
         eat( Tag.ABRE_PARENTESES );
@@ -135,6 +147,7 @@ public class Parser {
     }
 
     private void ElseStmt() throws IOException{
+        //System.out.println("ELSE-STMT()");
         // else "{" stmt-list "}" | λ
         switch(tok.tag){
             case Tag.ELSE: 
@@ -146,11 +159,13 @@ public class Parser {
     }
 
     private void Condition() throws IOException{
+        //System.out.println("EXPRESSION()");
         // expression
         Expression();
     }
 
     private void DoStmt() throws IOException{
+        //System.out.println("DO-STMT()");
         // do "{" stmt-list "}" do-suffix
         eat(Tag.DO);
         eat( Tag.ABRE_CHAVES );
@@ -160,6 +175,7 @@ public class Parser {
     }
 
     private void DoSuffix() throws IOException{
+        //System.out.println("DO-SUFFIX()");
         // while "(" condition ")"
         eat(Tag.WHILE);
         eat( Tag.ABRE_PARENTESES );
@@ -168,6 +184,7 @@ public class Parser {
     }
 
     private void ReadStmt() throws IOException{
+        //System.out.println("READ-STMT()");
         // read "(" identifier ")"
         eat(Tag.READ);
         eat( Tag.ABRE_PARENTESES );
@@ -176,6 +193,7 @@ public class Parser {
     }
 
     private void WriteStmt() throws IOException{
+        //System.out.println("WRITE-STMT()");
         // write "(" writable ")"
         eat(Tag.WRITE);
         eat( Tag.ABRE_PARENTESES );
@@ -184,20 +202,23 @@ public class Parser {
     }
 
     private void Writable() throws IOException{
+        //System.out.println("WRITEBLE()");
         // simple-expr
         SimpleExpr();
     }
 
     private void Expression() throws IOException{
+        //System.out.println("EXPRESSION()");
         // simple-expr | simple-expr relop simple-expr
         SimpleExpr();
         if(tok.tag == Tag.GT || tok.tag == Tag.GE || tok.tag == Tag.LT || tok.tag == Tag.LE  || tok.tag == Tag.EQ  || tok.tag == Tag.NE){
             Relop();
-            SimpleExpr();
+            Expression();
         }
     }
 
     private void SimpleExpr() throws IOException{
+        //System.out.println("SIMPLE-EXPR()");
         // term | term addop simple-expr
         Term();
         if(tok.tag == Tag.SUM || tok.tag == Tag.SUB || tok.tag == Tag.OR){
@@ -207,6 +228,7 @@ public class Parser {
     }
 
     private void Term() throws IOException{
+        //System.out.println("TERM()");
         // factor-a | factor-a mulop term
         FactorA();
         if(tok.tag == Tag.MUL || tok.tag == Tag.DIV || tok.tag == Tag.AND){
@@ -216,6 +238,7 @@ public class Parser {
     }
 
     private void FactorA() throws IOException{
+        //System.out.println("FACTOR-A()");
         // factor | "!" factor | "-" factor
         switch(tok.tag){
             case Tag.SUB: eat(Tag.SUB); Factor(); break;
@@ -225,6 +248,7 @@ public class Parser {
     }
 
     private void Factor() throws IOException{
+        //System.out.println("FACTOR()");
         // identifier | constant | "(" expression ")"
         switch(tok.tag){
             case Tag.ID: eat(Tag.ID); break;
@@ -239,6 +263,7 @@ public class Parser {
     }
 
     private void Relop() throws IOException{
+        //System.out.println("RELOP()");
         // ">" | ">=" | "<" | "<=" | "!=" | "=="
         switch(tok.tag){
             case Tag.GT: eat(Tag.GT); break;
@@ -252,6 +277,7 @@ public class Parser {
     }
 
     private void Addop() throws IOException{
+        //System.out.println("ADDOP()");
         // "+" | "-" | "||"
         switch(tok.tag){
             case Tag.SUM: eat(Tag.SUM); break;
@@ -262,6 +288,7 @@ public class Parser {
     }
 
     private void Mulop() throws IOException{
+        //System.out.println("MULOP()");
         // "*" | "/" | "&&"
         switch(tok.tag){
             case Tag.MUL: eat(Tag.MUL); break;

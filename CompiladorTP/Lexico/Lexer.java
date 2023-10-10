@@ -112,6 +112,7 @@ public class Lexer {
                         default: asterisco = false;
                     }
                 }
+                ch = ' ';
                 return TOKEN_IGNORA;
             }
             // divisão
@@ -142,19 +143,16 @@ public class Lexer {
                 if (readch('='))
                     return Word.eq;
                 else
-                    ch = ' ';
                     return new Token('=');
             case '<':
                 if (readch('='))
                     return Word.le;
                 else
-                    ch = ' ';
                     return new Token('<');
             case '>':
                 if (readch('='))
                     return Word.ge;
                 else
-                    ch = ' ';
                     return new Token('>');
             case '+':
                 ch = ' ';
@@ -169,9 +167,6 @@ public class Lexer {
                 if (readch('='))
                     return Word.ne;
                 else{
-                    // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '!' não reconhecido > (linha "+ linha +")");
-                    ch = ' ';
                     return new Token('!');
                 }
             case ';':
