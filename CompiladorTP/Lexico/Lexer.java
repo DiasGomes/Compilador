@@ -48,6 +48,20 @@ public class Lexer {
         reserve(new Word("do", Tag.DO));
     }
 
+    private Token erroMsg(String msg){
+        System.out.println("ERRO: < "+msg+" >"); 
+        Token t = new Token(ch);
+        ch = ' ';
+        return t;
+    }
+
+    private Token erro(char c){
+        int c_num = (int) c;
+        System.out.println("ERRO: < Caractere {'"+ c +"', "+ c_num +"} nao reconhecido > (linha "+ linha +")");
+        ch = ' ';
+        return new Token(c);
+    }
+
     /* Lê o próximo caractere do arquivo */
     private void readch() throws IOException {
         ch = (char) file.read();
@@ -95,11 +109,8 @@ public class Lexer {
                     switch(ch){
                         // verifica fim de arquivo
                         case Tag.EOF: 
-                            System.out.println("ERRO: < Comentario nao foi fechado >"); 
                             terminou = true;  
-                            Token t = new Token(ch);
-                            ch = ' ';
-                            return t;
+                            erroMsg("Comentario nao foi fechado"); 
                         // verifica termino de comentario
                         case '*': asterisco = true; break;
                         case '/':   if(asterisco){
@@ -128,17 +139,13 @@ public class Lexer {
                     return Word.and;
                 else
                     // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '&' não reconhecido > (linha "+ linha +")");
-                    ch = ' ';
-                    return new Token('&');
+                    erro('&');
             case '|':
                 if (readch('|'))
                     return Word.or;
                 else
                     // REPORTAR ERRO
-                    System.out.println("ERRO: < Caractere '|' não reconhecido > (linha "+ linha +")");
-                    ch = ' ';
-                    return new Token('|');
+                    erro('|');
             case '=':
                 if (readch('='))
                     return Word.eq;
@@ -193,10 +200,7 @@ public class Lexer {
                 while (ch != '"') {
                     // não fechou string
                     if(ch == Tag.EOF){
-                        System.out.println("ERRO: < STRING nao finalizada >");
-                        Token t = new Token(ch);
-                        ch = ' ';
-                        return t;
+                        erroMsg("STRING nao finalizada");
                     }
                     sb.append(ch);
                     readch();
@@ -250,8 +254,7 @@ public class Lexer {
         // Caractere desconhecido (diferente de EOF)
         if(ch != Tag.EOF){
             // REPORTAR ERRO
-            int ch_num = (int) ch;
-            System.out.println("ERRO: < Caractere {'"+ ch +"', "+ ch_num +"} nao reconhecido > (linha "+ linha +")");
+            erro(ch);
         }
 
         // Caracteres não especificados
