@@ -9,8 +9,10 @@ float a, b, c;
     write("Digite mais um número: ");
     read(c);
     maior = 0;
-    if ( a>b && a>c ){
-        maior = a;
+    if ( a>b ){
+        if ( a>c ){
+            maior = a;
+        };
     }else{
         if (b>c){
             maior = b;

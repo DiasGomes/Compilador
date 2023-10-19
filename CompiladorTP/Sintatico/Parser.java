@@ -209,17 +209,19 @@ public class Parser {
 
     private void Expression() throws IOException{
         //System.out.println("EXPRESSION()");
-        // simple-expr | simple-expr relop simple-expr
+        // expression ::= simple-expr expression’
+        // expression’ ::= relop simple-expr | λ
         SimpleExpr();
         if(tok.tag == Tag.GT || tok.tag == Tag.GE || tok.tag == Tag.LT || tok.tag == Tag.LE  || tok.tag == Tag.EQ  || tok.tag == Tag.NE){
             Relop();
-            Expression();
+            SimpleExpr();
         }
     }
 
     private void SimpleExpr() throws IOException{
         //System.out.println("SIMPLE-EXPR()");
-        // term | term addop simple-expr
+        // simple-expr ::= term simple-expr’
+        // simple-expr’ ::= addop simple-expr | λ
         Term();
         if(tok.tag == Tag.SUM || tok.tag == Tag.SUB || tok.tag == Tag.OR){
             Addop();
@@ -229,7 +231,8 @@ public class Parser {
 
     private void Term() throws IOException{
         //System.out.println("TERM()");
-        // factor-a | factor-a mulop term
+        // term ::= factor-a term’
+        // term’ ::= mulop term| λ
         FactorA();
         if(tok.tag == Tag.MUL || tok.tag == Tag.DIV || tok.tag == Tag.AND){
             Mulop();
