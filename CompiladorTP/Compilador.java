@@ -14,14 +14,14 @@ public class Compilador {
         if(args.length > 0){
             System.out.println("\nCompilando o arquivo "+args[0]+"\n");
             lexer = new Lexer(args[0]);
+            parser = new Parser(lexer);
+            parser.ExecParser();
+            System.out.println("============ Fim de analise! ==========\n");
             if(args.length > 1){
                 if(args[1].equalsIgnoreCase("tabela")){
                     lexer.showTable();
                 }
             }
-            parser = new Parser(lexer);
-            parser.ExecParser();
-            System.out.println("============ Fim de analise! ==========\n");
         }else{
             System.out.println("Erro: Arquivo não informado");
         }

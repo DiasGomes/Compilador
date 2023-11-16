@@ -4,14 +4,17 @@ import java.io.IOException;
 import CompiladorTP.Lexico.Lexer;
 import CompiladorTP.Lexico.Tag;
 import CompiladorTP.Lexico.Token;
+import CompiladorTP.Semantico.Semantic;
 
 public class Parser {
 
     private Token tok;
     private Lexer lex;
+    private Semantic sem;
 
     public Parser(Lexer l) throws IOException { 
         lex = l; 
+        sem = new Semantic(lex);
         move(); 
     }
 
@@ -69,28 +72,29 @@ public class Parser {
     private void Decl() throws IOException{
         //System.out.println("DECL()");
         // type ident-list
-        Type();
-        IdentList();
+        char t = Type();
+        IdentList(t);
     }
 
-    private void IdentList() throws IOException{
+    private void IdentList(char tipo) throws IOException{
         //System.out.println("IDENT-LIST()");
         // identifier {"," identifier}
         eat(Tag.ID);
+        sem.setIdType(tipo);
         if(tok.tag == Tag.VIRGULA){
             eat(Tag.VIRGULA);
-            IdentList();
+            IdentList(tipo);
         }
     }
 
-    private void Type() throws IOException{
+    private char Type() throws IOException{
         //System.out.println("TYPE()");
         // int | string | float
         switch(tok.tag){
-            case Tag.INT: eat(Tag.INT); break;
-            case Tag.STRING: eat(Tag.STRING); break;
-            case Tag.FLOAT: eat(Tag.FLOAT); break;
-            default: erro("INT, STRING ou FLOAT");
+            case Tag.INT: eat(Tag.INT); return 'i';
+            case Tag.STRING: eat(Tag.STRING); return 's';
+            case Tag.FLOAT: eat(Tag.FLOAT); return 'f';
+            default: erro("INT, STRING ou FLOAT"); return 'e';
         }
     }
 
@@ -129,8 +133,10 @@ public class Parser {
         //System.out.println("ASSIGN-STMT()");
         // identifier "=" simple_expr
         eat(Tag.ID);
+        char id = lex.current.getTypeAsChar();
         eat(Tag.ATR);
-        SimpleExpr();
+        char s = SimpleExpr();
+        sem.checkTypes(id, s);
     }
 
     private void IfStmt() throws IOException{
@@ -207,61 +213,72 @@ public class Parser {
         SimpleExpr();
     }
 
-    private void Expression() throws IOException{
+    private char Expression() throws IOException{
         //System.out.println("EXPRESSION()");
         // expression ::= simple-expr expression’
         // expression’ ::= relop simple-expr | λ
-        SimpleExpr();
+        char s1 = SimpleExpr();
+        char output = s1;
         if(tok.tag == Tag.GT || tok.tag == Tag.GE || tok.tag == Tag.LT || tok.tag == Tag.LE  || tok.tag == Tag.EQ  || tok.tag == Tag.NE){
             Relop();
-            SimpleExpr();
+            char s2 = SimpleExpr();
+            output = sem.checkTypes(s1, s2);
         }
+        return output;
     }
 
-    private void SimpleExpr() throws IOException{
+    private char SimpleExpr() throws IOException{
         //System.out.println("SIMPLE-EXPR()");
         // simple-expr ::= term simple-expr’
         // simple-expr’ ::= addop simple-expr | λ
-        Term();
+        char t = Term();
+        char output = t;
         if(tok.tag == Tag.SUM || tok.tag == Tag.SUB || tok.tag == Tag.OR){
             Addop();
-            SimpleExpr();
+            char s = SimpleExpr();
+            output = sem.checkSimpleExprRule(t, s, tok.tag == Tag.SUM);
         }
+        return output;
     }
 
-    private void Term() throws IOException{
+    private char Term() throws IOException{
         //System.out.println("TERM()");
         // term ::= factor-a term’
         // term’ ::= mulop term| λ
-        FactorA();
+        char f = FactorA();
+        char output = f;
         if(tok.tag == Tag.MUL || tok.tag == Tag.DIV || tok.tag == Tag.AND){
             Mulop();
-            Term();
+            char t = Term();
+            output = sem.checkTermRule(f, t, tok.tag == Tag.DIV );
         }
+        return output;
     }
 
-    private void FactorA() throws IOException{
+    private char FactorA() throws IOException{
         //System.out.println("FACTOR-A()");
         // factor | "!" factor | "-" factor
+        char c;
         switch(tok.tag){
-            case Tag.SUB: eat(Tag.SUB); Factor(); break;
-            case Tag.NEG: eat(Tag.NEG); Factor(); break;
-            default: Factor();
+            case Tag.SUB: eat(Tag.SUB); c = Factor(); break;
+            case Tag.NEG: eat(Tag.NEG); c = Factor(); break;
+            default: c = Factor();
         }
+        return c;
     }
 
-    private void Factor() throws IOException{
+    private char Factor() throws IOException{
         //System.out.println("FACTOR()");
         // identifier | constant | "(" expression ")"
         switch(tok.tag){
-            case Tag.ID: eat(Tag.ID); break;
-            case Tag.FLOAT_CONST: eat(Tag.FLOAT_CONST); break;
-            case Tag.INTEGER_CONST: eat(Tag.INTEGER_CONST); break;
-            case Tag.STRING_CONST: eat(Tag.STRING_CONST); break;
+            case Tag.ID: eat(Tag.ID); return sem.isDecl();
+            case Tag.FLOAT_CONST: eat(Tag.FLOAT_CONST); return 'f';
+            case Tag.INTEGER_CONST: eat(Tag.INTEGER_CONST); return 'i';
+            case Tag.STRING_CONST: eat(Tag.STRING_CONST); return 's';
             case Tag.ABRE_PARENTESES: 
-                eat(Tag.ABRE_PARENTESES); Expression(); 
-                eat(Tag.FECHA_PARENTESES); break;
-            default: erro("ID, CONSTANT ou '('");
+                eat(Tag.ABRE_PARENTESES); char exp = Expression(); 
+                eat(Tag.FECHA_PARENTESES); return exp;
+            default: erro("ID, CONSTANT ou '('"); return 'e';
         }
     }
 

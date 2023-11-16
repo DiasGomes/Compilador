@@ -3,6 +3,10 @@ package CompiladorTP.Lexico;
 public class Word extends Token {
     
     private String lexeme = "";
+    private String type;
+    private double value;
+    private boolean init = false;
+
     public static final Word and = new Word("&&", Tag.AND);
     public static final Word or = new Word("||", Tag.OR);
     public static final Word eq = new Word("==", Tag.EQ);
@@ -13,6 +17,14 @@ public class Word extends Token {
     public Word(String s, int tag) {
         super(tag);
         lexeme = s;
+    }
+
+    public Word(String s, int tag, String t, double v) {
+        super(tag);
+        lexeme = s;
+        type = t;
+        value = v;
+        init = true;
     }
 
     public String toString() {
@@ -36,6 +48,38 @@ public class Word extends Token {
 
     public String getLexeme(){
         return lexeme;
+    }
+
+    public String getType(){return type;}
+
+    public char getTypeAsChar(){
+        switch(type){
+            case "int": return 'i';
+            case "float": return 'f';
+            case "string": return 's';
+        }
+        return 'e';
+    }
+
+    public void setType(char c){
+        switch(c){
+            case 'i': type = "int"; break;
+            case 'f': type = "float"; break;
+            case 's': type = "string"; break;
+            default: 
+        }
+    }
+
+    public Double getValue(){
+        return value;
+    }
+
+    public void setValue(double num){
+        value = num;
+    }
+
+    public boolean isInit(){
+        return init;
     }
 
 }

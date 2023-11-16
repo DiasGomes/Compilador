@@ -6,6 +6,7 @@ import java.util.*;
 public class Lexer {
 
     public static int linha = 1; // contador de linhas
+    public Word current; 
     private char ch = ' '; // caractere lido do arquivo
     private FileReader file;
     private Hashtable<String, Word> words = new Hashtable<String, Word>();
@@ -16,7 +17,12 @@ public class Lexer {
         System.out.println("PALAVRA | TIPO");
         System.out.println("----------------------");
         for( Map.Entry<String, Word> entry : words.entrySet() ){
-            System.out.println( entry.getKey() + " = " + entry.getValue() );
+            System.out.print( entry.getKey() + " => " + entry.getValue());
+            if(entry.getValue().getType() != null)
+                {System.out.print(", " + entry.getValue().getType());}
+            if(entry.getValue().isInit() == true)
+                {System.out.print(", " + entry.getValue().getValue());}
+            System.out.println();
         }
         System.out.println("=======================");
     }
@@ -247,6 +253,7 @@ public class Lexer {
             if (w != null)
                 return w; // palavra já existe na HashTable
             w = new Word(s, Tag.ID);
+            current = w;
             words.put(s, w);
             return w;
         }
