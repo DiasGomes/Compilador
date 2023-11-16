@@ -1,0 +1,13 @@
+// testa comentarios
+// de uma linha seguidos
+
+class TesteDuploComentario
+int a, result;
+
+{
+    write("Digite o valor de a:");
+    read (a);
+    result = (a * 2);
+    write("O Resultado e: ");
+    write(result);
+}

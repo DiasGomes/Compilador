@@ -5,7 +5,7 @@ float a,b,c, result;
     write("Digite o valor de a:");
     read (a);
     b = 10.234;
-    c = 0.25;
+    c = 0.25c;
     result = (a * b * c);
     write("O Resultado e: ");
     write(result);

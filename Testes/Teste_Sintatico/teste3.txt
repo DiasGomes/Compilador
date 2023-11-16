@@ -1,4 +1,4 @@
-class Teste3
+classe Teste3
 /** Verificando fluxo de controle
 Programa com if e while aninhados **/
 
@@ -9,7 +9,7 @@ int media, soma;
     soma = 0;
     write("Quantos dados deseja informar?" );
     read (qtd);
-    if (qtd>=2){
+    IF (qtd>=2){
         i=0;
         do{
             write("Altura: ");
@@ -24,5 +24,5 @@ int media, soma;
     }
     else{
         write("Quantidade inválida.");
-    };
+    }
 }
