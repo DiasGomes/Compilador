@@ -53,10 +53,12 @@ public class Word extends Token {
     public String getType(){return type;}
 
     public char getTypeAsChar(){
-        switch(type){
-            case "int": return 'i';
-            case "float": return 'f';
-            case "string": return 's';
+        if(type != null){
+            switch(type){
+                case "int": return 'i';
+                case "float": return 'f';
+                case "string": return 's';
+            }
         }
         return 'e';
     }

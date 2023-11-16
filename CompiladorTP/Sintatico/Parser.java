@@ -130,13 +130,14 @@ public class Parser {
     }
 
     private void AssignStmt() throws IOException{
-        //System.out.println("ASSIGN-STMT()");
+        // System.out.println("ASSIGN-STMT()");
         // identifier "=" simple_expr
         eat(Tag.ID);
         char id = lex.current.getTypeAsChar();
+        String var = lex.current.getLexeme();
         eat(Tag.ATR);
         char s = SimpleExpr();
-        sem.checkTypes(id, s);
+        sem.checkAssign(var, id, s);
     }
 
     private void IfStmt() throws IOException{
@@ -234,23 +235,25 @@ public class Parser {
         char t = Term();
         char output = t;
         if(tok.tag == Tag.SUM || tok.tag == Tag.SUB || tok.tag == Tag.OR){
+            int tmp = tok.tag;
             Addop();
             char s = SimpleExpr();
-            output = sem.checkSimpleExprRule(t, s, tok.tag == Tag.SUM);
+            output = sem.checkSimpleExprRule(t, s, tmp == Tag.SUM);
         }
         return output;
     }
 
     private char Term() throws IOException{
-        //System.out.println("TERM()");
+        // System.out.println("TERM()");
         // term ::= factor-a term’
         // term’ ::= mulop term| λ
         char f = FactorA();
         char output = f;
         if(tok.tag == Tag.MUL || tok.tag == Tag.DIV || tok.tag == Tag.AND){
+            int tmp = tok.tag;
             Mulop();
             char t = Term();
-            output = sem.checkTermRule(f, t, tok.tag == Tag.DIV );
+            output = sem.checkTermRule(f, t, tmp == Tag.DIV );
         }
         return output;
     }

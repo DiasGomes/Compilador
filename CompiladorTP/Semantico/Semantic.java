@@ -53,6 +53,17 @@ public class Semantic {
         return c1;
     }
 
+    public char checkAssign(String var, char c1, char c2){
+        if(c1 == 'e'){
+            erroNotDecl(var);
+            return 'e';
+        }else if(c1 != c2){
+            erroType();
+            return 'e';
+        }
+        return c1;
+    }
+
     public char isDecl(){
         if(lex.current.getType() != null){
             return lex.current.getTypeAsChar();
@@ -66,11 +77,11 @@ public class Semantic {
     }
 
     private void erroDecl(String var){
-        System.out.println("ERRO: Variavel '"+var+"' já declarada (linha "+Lexer.linha+")");
+        System.out.println("ERRO: Variavel '"+var+"' ja declarada (linha "+Lexer.linha+")");
     }
 
     private void erroNotDecl(String var){
-        System.out.println("ERRO: Variavel '"+var+"' não declarada (linha "+Lexer.linha+")");
+        System.out.println("ERRO: Variavel '"+var+"' nao declarada (linha "+Lexer.linha+")");
     }
 
 }

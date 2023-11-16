@@ -250,8 +250,10 @@ public class Lexer {
             } while (Character.isLetterOrDigit(ch) || ch == '_');
             String s = sb.toString();
             Word w = (Word) words.get(s);
-            if (w != null)
+            if (w != null){
+                current = w;
                 return w; // palavra já existe na HashTable
+            }
             w = new Word(s, Tag.ID);
             current = w;
             words.put(s, w);
