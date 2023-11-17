@@ -2,8 +2,8 @@ class Teste3
 /** Verificando fluxo de controle
 Programa com if e while aninhados **/
 
-int i;
-int media, soma;
+int i, qtd, altura, soma;
+float media;
 
 {
     soma = 0;

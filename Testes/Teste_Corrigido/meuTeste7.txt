@@ -8,9 +8,8 @@ string nome, texto;
     read (idade);
     write("Digite seu nome:");
     read (nome);
-    texto = "Meu nome é" * nome;
-    texto = "Meu nome é" - nome;
     texto = "Meu nome é" + nome;
-    texto = texto + " e minha idade e: " + idade;
+    texto = texto + " e minha idade e: ";
     write(texto);
+    write(idade);
 }

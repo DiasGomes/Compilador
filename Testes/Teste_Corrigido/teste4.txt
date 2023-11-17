@@ -1,6 +1,7 @@
 class teste4 
-int idade, j, k, total;
-string nome, texto;
+int idade, total;
+float i, j, k;
+string nome, texto, sobrenome;
 
 {
     // Outro programa de teste
@@ -10,11 +11,11 @@ string nome, texto;
     read(sobrenome);
     write("Digite a sua idade: ");
     read (idade);
-    k = i * (5-i * 50) / 10;
-    j = i * 10;
+    k = i * (5.0-i * 50.0) / 10.0;
+    j = i * 10.0;
     k = i * j / k;
     texto = nome + " " + sobrenome + ", os números gerados sao: ";
-    write (text);
+    write (texto);
     write(j);
     write(k);
 }

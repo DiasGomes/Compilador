@@ -1,5 +1,6 @@
 class TesteFloat
-float a,b,c, result;
+int a,b,c; 
+float a, result;
 
 {
     write("Digite o valor de a:");
