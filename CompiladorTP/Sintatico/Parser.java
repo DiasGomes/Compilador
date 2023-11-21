@@ -168,7 +168,8 @@ public class Parser {
     private void Condition() throws IOException{
         //System.out.println("EXPRESSION()");
         // expression
-        Expression();
+        char  e = Expression();
+        sem.checkCondition(e);
     }
 
     private void DoStmt() throws IOException{
@@ -223,7 +224,8 @@ public class Parser {
         if(tok.tag == Tag.GT || tok.tag == Tag.GE || tok.tag == Tag.LT || tok.tag == Tag.LE  || tok.tag == Tag.EQ  || tok.tag == Tag.NE){
             Relop();
             char s2 = SimpleExpr();
-            output = sem.checkTypes(s1, s2);
+            // retorna booleano
+            output = sem.checkRelopExpression(s1, s2);
         }
         return output;
     }

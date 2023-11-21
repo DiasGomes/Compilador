@@ -9,4 +9,10 @@ float a,b,c, result;
     result = (a * b * c);
     write("O Resultado e: ");
     write(result);
+    if(result >= 10.0){
+        write("Sucesso");
+    }else{
+        write("Fracasso");
+    };
+    
 }

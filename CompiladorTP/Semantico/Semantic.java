@@ -53,6 +53,20 @@ public class Semantic {
         return c1;
     }
 
+    public char checkRelopExpression(char c1, char c2){
+        if(c1 != c2){
+            erroType();
+            return 'e';
+        }
+        return 'b';
+    }
+
+    public void checkCondition(char c){
+        if(c != 'b'){
+            erroCondition();
+        }
+    }
+
     public char checkAssign(String var, char c1, char c2){
         if(c1 == 'e'){
             erroNotDecl(var);
@@ -74,6 +88,10 @@ public class Semantic {
 
     private void erroType(){
         System.out.println("ERRO: Tipo invalido (linha "+Lexer.linha+")");
+    }
+
+    private void erroCondition(){
+        System.out.println("ERRO: Condicao invalida (linha "+Lexer.linha+")");
     }
 
     private void erroDecl(String var){
