@@ -18,10 +18,10 @@ public class Lexer {
         System.out.println("----------------------");
         for( Map.Entry<String, Word> entry : words.entrySet() ){
             System.out.print( entry.getKey() + " => " + entry.getValue());
-            if(entry.getValue().getType() != null)
-                {System.out.print(", " + entry.getValue().getType());}
-            if(entry.getValue().isInit() == true)
-                {System.out.print(", " + entry.getValue().getValue());}
+            if(entry.getValue().getType() != null){
+                System.out.print(", " + entry.getValue().getType());
+                System.out.print(", " + entry.getValue().getOffset());
+            }
             System.out.println();
         }
         System.out.println("=======================");

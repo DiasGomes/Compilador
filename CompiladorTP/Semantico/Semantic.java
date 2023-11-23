@@ -5,15 +5,24 @@ import CompiladorTP.Lexico.Lexer;
 public class Semantic {
 
     private Lexer lex;
+    private int offset;
 
     public Semantic(Lexer l){
         lex = l;
+        offset = 0;
     }
 
     // adiciona o tipo da variável
     public void setIdType(char type){
         if(lex.current.getType() == null){
             lex.current.setType(type);
+            // define o endereço da variável
+            lex.current.setOffset(offset);
+            switch(type){
+                case 'i': offset+=4; break;
+                case 'f': offset+=8; break;
+                case 's': offset+=2; break;
+            }
         }else{
             // se o tipo já existe é por que já foi declarada
             erroDecl(lex.current.getLexeme());

@@ -4,7 +4,7 @@ public class Word extends Token {
     
     private String lexeme = "";
     private String type;
-    private double value;
+    private int offset = -1;
     private boolean init = false;
 
     public static final Word and = new Word("&&", Tag.AND);
@@ -19,12 +19,10 @@ public class Word extends Token {
         lexeme = s;
     }
 
-    public Word(String s, int tag, String t, double v) {
+    public Word(String s, int tag, String t) {
         super(tag);
         lexeme = s;
         type = t;
-        value = v;
-        init = true;
     }
 
     public String toString() {
@@ -72,16 +70,12 @@ public class Word extends Token {
         }
     }
 
-    public Double getValue(){
-        return value;
+    public int getOffset(){
+        return offset;
     }
 
-    public void setValue(double num){
-        value = num;
-    }
-
-    public boolean isInit(){
-        return init;
+    public void setOffset(int num){
+        offset = num;
     }
 
 }
